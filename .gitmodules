@@ -1,3 +1,6 @@
 [submodule "Godot_PNID_Viewer"]
 	path = external_tools/Godot_PNID_Viewer
 	url = https://github.com/diskhkme/Godot_PNID_Viewer
+[submodule "external_tools/viewer"]
+	path = external_tools/viewer
+	url = https://github.com/diskhkme/Godot_PNID_Viewer
