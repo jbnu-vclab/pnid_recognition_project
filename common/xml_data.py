@@ -1,4 +1,4 @@
-from symbol_object import SymbolObject, Vector2
+from common.symbol_object import SymbolObject, Vector2
 
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import parse
@@ -26,6 +26,7 @@ class XMLData:
 class FourpointXMLData(XMLData):
     def __init__(self):
         super().__init__()
+        self.symbol_object_list = []
 
     def load_xml_from_file(self, filepath):
         self.filepath = filepath

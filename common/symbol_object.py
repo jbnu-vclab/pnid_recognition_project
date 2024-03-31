@@ -20,7 +20,7 @@ class Vector2:
         return "[{}, {}]".format(self.x, self.y)
 
 class SymbolObject:
-    def __init__(self, type, cls, min_point, max_point, degree, flip, is_large):
+    def __init__(self, type, cls, min_point, max_point, degree, flip, is_large, raw_points=None):
         self.type = type
         self.cls = cls
         self.min_point = min_point
@@ -28,22 +28,31 @@ class SymbolObject:
         self.degree = degree
         self.flip = flip
         self.is_large = is_large
+        self.raw_points = raw_points
+
+        self.is_text: bool = False
+        if "text" in type:
+            self.is_text = True
+
+
+    def get_class_name(self):
+        if self.is_text:
+            return self.type
+        else:
+            return self.cls
 
     @classmethod
     def from_fourpoint(self, type, cls, x1, y1, x2, y2, x3, y3, x4, y4, degree, flip=False, is_large=False):
-        self.is_from_fourpoint = True
-
         raw_points = [Vector2() for i in range(4)]
         raw_points[0] = Vector2(x1,y1)
         raw_points[1] = Vector2(x2,y2)
         raw_points[2] = Vector2(x3,y3)
         raw_points[3] = Vector2(x4,y4)
-        self.raw_points = raw_points
 
         center = Vector2((x1 + x2 + x3 + x4) / 4.0, (y1 + y2 + y3 + y4) / 4.0)
         min_p = (raw_points[0] - center).rotated(math.radians(degree)) + center
         max_p = (raw_points[2] - center).rotated(math.radians(degree)) + center
-        return SymbolObject(type, cls, min_p, max_p, degree, flip, is_large)
+        return SymbolObject(type, cls, min_p, max_p, degree, flip, is_large, raw_points)
 
 
     @classmethod
