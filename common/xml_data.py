@@ -19,6 +19,14 @@ class XMLData:
     def getErrorInfo(self):
         return self.error_list
 
+    def to_dota_str(self):
+        str = ""
+        for symbol_object in self.symbol_object_list:
+            str += symbol_object.to_dota_str() + "\n"
+
+        return str
+
+
     def __repr__(self):
         return "file: {}, num symbols: {}".format(self.filepath, len(self.symbol_object_list))
 
@@ -141,16 +149,18 @@ class TwopointXMLData(XMLData):
 
 
 if __name__ == "__main__":
-    fourpoint_sample_path = "D:/VClab/도면인식/Data/230228_Data/도면이미지/sample/26071-200-M6-052-00001.xml"
+    fourpoint_sample_path = "G:/VCLab_NAS/Project/도면인식/Data/230228_Data/도면이미지/sample/26071-200-M6-052-00001.xml"
     xml_data = FourpointXMLData()
     xml_data.load_xml_from_file(fourpoint_sample_path)
     print(xml_data)
-    for symbol_object in xml_data.symbol_object_list:
-        print(symbol_object)
+    # for symbol_object in xml_data.symbol_object_list:
+    #     print(symbol_object)
+    print(xml_data.to_dota_str())
 
-    twopoint_sample_path = "D:/VClab/도면인식/Experiment/230318_2차년도실험/_2차년도_최종결과/26071-200-M6-052-00001_GT.xml"
+    twopoint_sample_path = "G:/VCLab_NAS/Project/도면인식/Experiment/230318_2차년도실험/_2차년도_최종결과/26071-200-M6-052-00001_GT.xml"
     xml_data2 = TwopointXMLData()
     xml_data2.load_xml_from_file(twopoint_sample_path)
     print(xml_data2)
-    for symbol_object in xml_data2.symbol_object_list:
-        print(symbol_object)
+    # for symbol_object in xml_data2.symbol_object_list:
+    #     print(symbol_object)
+    print(xml_data.to_dota_str())
