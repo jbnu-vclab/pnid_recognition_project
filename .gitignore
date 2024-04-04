@@ -162,3 +162,4 @@ cython_debug/
 
 # PNID Project
 *.txt
+test_data/

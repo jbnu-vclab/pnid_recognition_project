@@ -1,0 +1,13 @@
+{
+  "img_dir": "../test/test_data/2nd_source_full/JPG",
+  "data_dir": "../test/test_data/2nd_training_result/dota",
+  "save_dir": "../test/test_data/2nd_training_result/result",
+  "size": 800,
+  "gap": 500,
+  "img_rate_thr": 0.6,
+  "iof_thr": 0.7,
+  "convert_from_xml": false,
+  "remove_tmp_files": false,
+  "silent": false
+}
+
