@@ -43,10 +43,9 @@ def parse_args():
 
     if not os.path.exists(args.save_dir):
         os.mkdir(args.save_dir)
-        if args.use_split_def:
-            os.mkdir(os.path.join(args.save_dir,'train'))
-            os.mkdir(os.path.join(args.save_dir,'test'))
-            os.mkdir(os.path.join(args.save_dir,'val'))
+        os.mkdir(os.path.join(args.save_dir,'train'))
+        os.mkdir(os.path.join(args.save_dir,'test'))
+        os.mkdir(os.path.join(args.save_dir,'val'))
 
     with open(os.path.join(args.save_dir,'args.txt'), 'w+') as file:
         file.write(args_to_str(args))

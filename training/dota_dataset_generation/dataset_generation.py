@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../..')
+
 import os
 import os.path as osp
 import shutil
@@ -42,9 +45,9 @@ def generate_tmp_dir_files(args, source_dir, temp_dir, type):
         tmp_dirs[p] = osp.join(parent_dir, type)
         os.mkdir(tmp_dirs[p])
 
-        if p is "test":
+        if p == "test":
             copy_files_to_tmp_dir(test_drawings, source_dir, tmp_dirs[p])
-        elif p is "val":
+        elif p == "val":
             copy_files_to_tmp_dir(val_drawings, source_dir, tmp_dirs[p])
         else:
             train_drawings = [osp.splitext(f)[0] for f in os.listdir(source_dir) if osp.splitext(f)[0] not in test_drawings and osp.splitext(f)[0] not in val_drawings]

@@ -2,6 +2,7 @@ import argparse
 import os.path as osp
 import os
 import time
+import copy
 from functools import partial, reduce
 from multiprocessing import Pool, Manager
 import training.dota_dataset_generation.external.img_split as imgsplit
@@ -9,9 +10,10 @@ import common.util as util
 from tqdm import tqdm
 
 def convert_args(args, img_dir, ann_dir, save_dir):
-    parser = argparse.ArgumentParser(description='Splitting images')
-    imgsplit.add_parser(parser)
-    call_arg = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='Splitting images')
+    # imgsplit.add_parser(parser)
+    # call_arg = parser.parse_args()
+    call_arg = copy.deepcopy(args)
 
     call_arg.nproc = 10
     call_arg.sizes = [args.size]
