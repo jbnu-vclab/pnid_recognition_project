@@ -1,7 +1,13 @@
+import sys
+sys.path.append('../..')
+
+import difflib
+from global_settings.symbol_class_def import classes
 from common.symbol_object import SymbolObject, Vector2
 
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import parse
+
 
 class ImageMetadata:
     def __init__(self, filename, width, height, depth):
@@ -15,6 +21,10 @@ class XMLData:
         self.image_metadata = None
         self.symbol_object_list = []
         self.error_list = []
+        self.tree = None
+        self.root = None
+
+        self.fuzz_matching_cache = {}
 
     def getErrorInfo(self):
         return self.error_list
@@ -26,6 +36,26 @@ class XMLData:
 
         return str
 
+    def sanitize(self, symbol_object, fuzz_thr=0.8):
+        if not symbol_object.is_text:
+            if symbol_object.cls not in classes:
+                if symbol_object.cls in self.fuzz_matching_cache:
+                    symbol_object.cls = self.fuzz_matching_cache[symbol_object.cls]
+
+                # try fuzzy matching
+                matches = list(filter(lambda c: difflib.SequenceMatcher(None, c, symbol_object.cls).ratio() > fuzz_thr, classes))
+                if len(matches) > 0:
+                    r = sorted(matches, key=lambda c: difflib.SequenceMatcher(None, c, symbol_object.cls).ratio(), reverse=True)
+                    self.fuzz_matching_cache[symbol_object.cls] = r[0]
+                    symbol_object.cls = self.fuzz_matching_cache[symbol_object.cls]
+                else:
+                    return False  # failed matching
+
+        return True
+
+    def apply_scale(self, scale):
+        for symbol_object in self.symbol_object_list:
+            symbol_object.apply_scale(scale)
 
     def __repr__(self):
         return "file: {}, num symbols: {}".format(self.filepath, len(self.symbol_object_list))
@@ -36,21 +66,21 @@ class FourpointXMLData(XMLData):
         super().__init__()
         self.symbol_object_list = []
 
-    def load_xml_from_file(self, filepath):
+    def load_xml_from_file(self, filepath, sanitize=True):
         self.filepath = filepath
-        tree = parse(filepath)
-        root = tree.getroot()
+        self.tree = parse(filepath)
+        self.root = self.tree.getroot()
 
         try:
-            filename = root.findtext("filename")
-            width = int(root.find("size").findtext("width"))
-            height = int(root.find("size").findtext("height"))
-            depth = int(root.find("size").findtext("depth"))
+            filename = self.root.findtext("filename")
+            width = int(self.root.find("size").findtext("width"))
+            height = int(self.root.find("size").findtext("height"))
+            depth = int(self.root.find("size").findtext("depth"))
             self.image_metadata = ImageMetadata(filename, width, height, depth)
         except:
             print("no img file metadata")
 
-        for i, obj in enumerate(root.iter("symbol_object")):
+        for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")
             try:
                 x1 = int(bndbox.findtext("x1"))
@@ -70,7 +100,13 @@ class FourpointXMLData(XMLData):
                 degree = float(obj.findtext('degree'))
                 flip = True if obj.findtext('flip') == "y" else False
 
-                self.symbol_object_list.append(SymbolObject.from_fourpoint(type,cls,x1,y1,x2,y2,x3,y3,x4,y4,degree,flip))
+                symbol_object = SymbolObject.from_fourpoint(type,cls,x1,y1,x2,y2,x3,y3,x4,y4,degree,flip)
+                if sanitize:
+                    if self.sanitize(symbol_object):
+                        self.symbol_object_list.append(symbol_object)
+                    else:
+                        self.root.remove(obj)
+                        raise Exception('class does not exist in symbol_class_def in global_settings')
 
             except Exception as e:
                 self.error_list.append(
@@ -97,21 +133,21 @@ class TwopointXMLData(XMLData):
     def __init__(self):
         super().__init__()
 
-    def load_xml_from_file(self, filepath):
+    def load_xml_from_file(self, filepath, sanitize=True):
         self.filepath = filepath
-        tree = parse(filepath)
-        root = tree.getroot()
+        self.tree = parse(filepath)
+        self.root = self.tree.getroot()
 
         try:
-            filename = root.findtext("filename")
-            width = int(root.find("size").findtext("width"))
-            height = int(root.find("size").findtext("height"))
-            depth = int(root.find("size").findtext("depth"))
+            filename = self.root.findtext("filename")
+            width = int(self.root.find("size").findtext("width"))
+            height = int(self.root.find("size").findtext("height"))
+            depth = int(self.root.find("size").findtext("depth"))
             self.image_metadata = ImageMetadata(filename, width, height, depth)
         except:
             print("no img file metadata")
 
-        for i, obj in enumerate(root.iter("symbol_object")):
+        for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")
             try:
                 x1 = int(bndbox.findtext("xmin"))
@@ -131,7 +167,13 @@ class TwopointXMLData(XMLData):
                 flip = True if obj.findtext('flip') == "y" else False
                 is_large = True if obj.findtext('isLarge') == "y" else False
 
-                self.symbol_object_list.append(SymbolObject.from_twopoint(type,cls,min_point,max_point,degree,flip,is_large))
+                symbol_object = SymbolObject.from_twopoint(type,cls,min_point,max_point,degree,flip,is_large)
+                if sanitize:
+                    if self.sanitize(symbol_object):
+                        self.symbol_object_list.append(symbol_object)
+                    else:
+                        self.root.remove(obj)
+                        raise Exception('class does not exist in symbol_class_def in global_settings')
 
             except Exception as e:
                 self.error_list.append(

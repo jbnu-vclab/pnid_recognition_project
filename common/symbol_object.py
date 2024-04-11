@@ -1,5 +1,7 @@
-import math
+import sys
+sys.path.append('../..')
 
+import math
 
 class Vector2:
     def __init__(self, x: float=0, y:float=0):
@@ -11,6 +13,12 @@ class Vector2:
 
     def __add__(self, other):
         return Vector2(self.x + other.x, self.y + other.y)
+
+    def __floordiv__(self, other):
+        return Vector2(math.floor(self.x / other), math.floor(self.y / other))
+
+    def __mul__(self, other):
+        return Vector2(math.floor(self.x * other), math.floor(self.y * other))
 
     def rotated(self, angle_rad):
         return Vector2(self.x * math.cos(angle_rad) - self.y * math.sin(angle_rad),
@@ -38,7 +46,6 @@ class SymbolObject:
         self.is_text: bool = False
         if "text" in type:
             self.is_text = True
-
 
     def get_class_name(self):
         if self.is_text:
@@ -86,6 +93,12 @@ class SymbolObject:
         str += f'{category} {difficulty}'
 
         return str
+
+    def apply_scale(self, scale = 1.0):
+        self.min_point = self.min_point * scale
+        self.max_point = self.min_point * scale
+        for i, p in enumerate(self.four_points):
+            self.four_points[i] = p * scale
 
 
     def __repr__(self):

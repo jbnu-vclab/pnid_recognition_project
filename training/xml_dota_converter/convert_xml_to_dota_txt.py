@@ -1,18 +1,24 @@
+import sys
+sys.path.append('../..')
+
 import os
 import os.path as osp
 
 from common.xml_data import FourpointXMLData
 
-def convert_xml_to_dota_single(xml_path, dota_path):
+def convert_xml_to_dota_single(xml_path, dota_path, scale):
     xml_data = FourpointXMLData()
     xml_data.load_xml_from_file(xml_path)
+
+    if scale != 1.0:
+        xml_data.apply_scale(scale)
 
     with open(dota_path, "w") as f:
         f.write(xml_data.to_dota_str())
 
     return True
 
-def convert_xml_to_dota_txt(in_dir, out_dir):
+def convert_xml_to_dota_txt(in_dir, out_dir, scale):
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
 
@@ -22,7 +28,7 @@ def convert_xml_to_dota_txt(in_dir, out_dir):
         out_path = os.path.join(out_dir, out_name)
 
         in_path = os.path.join(in_dir, xml_file)
-        convert_xml_to_dota_single(in_path, out_path)
+        convert_xml_to_dota_single(in_path, out_path, scale)
 
 if __name__ == '__main__':
     convert_xml_to_dota_txt('../../test/2nd_source/xml', '../../test/2nd_source/dota')

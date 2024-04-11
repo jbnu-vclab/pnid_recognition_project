@@ -7,7 +7,6 @@ from functools import partial, reduce
 from multiprocessing import Pool, Manager
 import training.dota_dataset_generation.external.img_split as imgsplit
 import common.util as util
-from tqdm import tqdm
 
 def convert_args(args, img_dir, ann_dir, save_dir):
     # parser = argparse.ArgumentParser(description='Splitting images')

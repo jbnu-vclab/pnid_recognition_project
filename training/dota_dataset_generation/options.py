@@ -15,11 +15,11 @@ def get_parser(name='DOTA Dataset Generation') -> argparse.ArgumentParser:
     parser.add_argument('--img-dir', type=str)
     parser.add_argument('--data-dir', type=str)
     parser.add_argument('--save-dir', type=str)
+    parser.add_argument('--scale', default=1.0, type=float)
     parser.add_argument('--size', default=800, type=int)
     parser.add_argument('--gap', default=500, type=int)
     parser.add_argument('--img-rate-thr', default=0.6, type=float)
     parser.add_argument('--iof-thr', default=0.7, type=float)
-    parser.add_argument('--convert-from-xml', default=True, type=bool)
     parser.add_argument('--remove-tmp-files', default=True, type=bool)
     parser.add_argument('--silent', default=True, type=bool)
 
