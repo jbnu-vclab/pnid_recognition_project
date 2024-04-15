@@ -1,66 +1,194 @@
-classes = (
-    'flange', 'gate_valve', 'flanged_nozzle', 'concentric_reducer',
-    'utility_conenction', 'off_page_connector', 'blind_flange',
-    'gate_valve_with_plug', 'ball_valve', 'open_figure_8_blind', 'check_valve',
-    'globe_valve', 'gate_valve_with_flange', 'pipe_nozzle', 'connector',
-    'off_plot_connector', 'closed_figure_8_blind', 'open_drain_connectors',
-    'hose_connection', 'spacer', 'ball_valve_with_flange', 'butterfly_valve',
-    'closed_drain_connectors', 'eccentric_reducer', 'ball_valve_with_plug',
-    'interface_connecting_point', 'removable_spool', 't_type_strainer', 'cap',
-    'sample_connection', 'y_type_strainer', 'screwed_cap', 'steam_trap',
-    'swing_elbow', 'off_page_connector_two_way', 'pulsation_dampener',
-    'desuperheater', '3_way_valve', 'tie_in_symbol', 'plug',
-    'atmospheric_vent_with_bird_screen', 'vent_cover', 'plug_valve',
-    'expansion_joint', 'rotating_disc_butterfly_valve', 'per_strainer',
-    'flexible_hose', 'extend_steam_valve', 'dual_plate_wafer_check_valve',
-    'globe_valve_with_plug', 'vent_silencer', 'basket_strainer', 'blank',
-    'off_plot_connector_two_way', 'flame_arrestor', 'injection_quill',
-    'ejector_eductor', 'damper', 'angle_blowdown_valve', 'needle_valve',
-    'cone_strainer', 'manway', 'removable_spool_left', 'filter',
-    'removable_spool_right', 'double_gate_valve_with_plug',
-    'break_away_coupling', 'globe_valve_with_flange', 'end_gap_line',
-    'removable_spool_elbow', 'vendor_strainer', 'knife_valve',
-    'globe_valve_handwheel', 'diverter_valve',
-    'discrete_instruments_field_mounted',
-    'shared_display_and_control_primary_location_normally_accessible_to_an_operator',
-    'end_gap', 'plc_primary_location_normally_inaccessible_to_an_operator',
-    'chemical_seal_diaphragm', 'diaphragm', 'restriction_orifice',
-    'pressure_relief_or_safety_valve',
-    'plc_primary_location_normally_accessible_to_an_operator',
-    'discrete_hardware_interlock_field_mounted', 'cylinder',
-    'plc_field_mounted', 'vortex', 'handwheel', 'variable_area_flowmeter',
-    'shared_display_and_control_primary_location_normally_inaccessible_to_an_operator',
-    'discrete_instruments_auxiliary_location_normally_accessible_to_an_operator',
-    'pressure_reducing_regulator',
-    'discrete_instruments_primary_location_normally_accessible_to_an_operator',
-    'motor_operated', 'instrument_box',
-    'pilot_light_or_gauge_glass_illuminator', 'general_sight_glass',
-    'manual_operator', 'function_multiply', 'back_pressure_regulator',
-    'function_subtract', 'function_low_signal_selector',
-    'function_unspecified', 'function_high_signal_selector', 'venturi',
-    'function_derivative', 'coriolis_flowmeter', 'function_average',
-    'function_summation', 'restriction_orifice_multistage',
-    'safety_head_for_pressure_relief', 'thermal_mass_flowmeter',
-    'integral_orifice', 'function_special', 'orifice_valve', 'function_time',
-    'slide_valve', 'function_root', 'electric_motor_general',
-    'pump_centrifugal_type', 'vortex_breaker', 'tank_vessel', 'shell_type_e',
-    'vertical_drum', 'air_cooler', 'front_end_type_a', 'horizontal_drum',
-    'pump_positive_diaplacement', 'box_equipment_double_chain',
-    'real_end_type_s', 'gas_filter_bag_candle_or_cartridge_type',
-    'tank_vessel_with_dished_ends', 'boot_w_head',
-    'compressor_vacuum_pump_reciprocating_piston_type', 'in_line_static_mixer',
-    'blowdown_pot', 'heat_exchanger_of_double_pipe_type', 'conveyor_belt_type',
-    'shell_type_k', 'vent_silencer_equipment', 'sump_drum', 'shell_type_h',
-    'ultrasonic_type_meter', 'heat_exchanger_vendor', 'steam_turbine',
-    'boiler_heater', 'compressor_reciprocating_type_5',
-    'compressor_centrifugal_type', 'pump_vertical_wet_pit', 'shell_type_x',
-    'pump_gear_type', 'filter_oil_vendor', 'front_end_type_b', 'shell_type_j',
-    'liquid_filter_general', 'real_end_type_u',
-    'compressor_reciprocating_type_4a',
-    'vessel_with_dished_roof_and_conical_bottom', 'debutanizer',
-    'front_end_type_d', 'sump_vendor', 'deethanizer', 'chloride_treater',
-    'turbine_general', 'compressor_reciprocating_type_4b',
-    'compressor_reciprocating_type_2a', 'tank_flat_roof', 'vendor_heater',
-    'farctionator_bottom', 'oil_cooler', 'reactor_type1', 'reactor_type2',
-    'reactor_type3', 'heat_exchanger_packinox', 'gas_cylinder', 'annotation',
-    'spec_break', 'text')
+symbol_type_def_str = \
+"pipe_symbol|flange \
+pipe_symbol|gate_valve \
+pipe_symbol|flanged_nozzle \
+pipe_symbol|concentric_reducer \
+pipe_symbol|utility_conenction \
+pipe_symbol|off_page_connector \
+pipe_symbol|blind_flange \
+pipe_symbol|gate_valve_with_plug \
+pipe_symbol|ball_valve \
+pipe_symbol|open_figure_8_blind \
+pipe_symbol|check_valve \
+pipe_symbol|globe_valve \
+pipe_symbol|gate_valve_with_flange \
+pipe_symbol|pipe_nozzle \
+pipe_symbol|connector \
+pipe_symbol|off_plot_connector \
+pipe_symbol|closed_figure_8_blind \
+pipe_symbol|open_drain_connectors \
+pipe_symbol|hose_connection \
+pipe_symbol|spacer \
+pipe_symbol|ball_valve_with_flange \
+pipe_symbol|butterfly_valve \
+pipe_symbol|closed_drain_connectors \
+pipe_symbol|eccentric_reducer \
+pipe_symbol|ball_valve_with_plug \
+pipe_symbol|interface_connecting_point \
+pipe_symbol|removable_spool \
+pipe_symbol|t_type_strainer \
+pipe_symbol|cap \
+pipe_symbol|sample_connection \
+pipe_symbol|y_type_strainer \
+pipe_symbol|screwed_cap \
+pipe_symbol|steam_trap \
+pipe_symbol|swing_elbow \
+pipe_symbol|off_page_connector_two_way \
+pipe_symbol|pulsation_dampener \
+pipe_symbol|desuperheater \
+pipe_symbol|3_way_valve \
+pipe_symbol|tie_in_symbol \
+pipe_symbol|plug \
+pipe_symbol|atmospheric_vent_with_bird_screen \
+pipe_symbol|vent_cover \
+pipe_symbol|plug_valve \
+pipe_symbol|expansion_joint \
+pipe_symbol|rotating_disc_butterfly_valve \
+pipe_symbol|per_strainer \
+pipe_symbol|flexible_hose \
+pipe_symbol|extend_steam_valve \
+pipe_symbol|dual_plate_wafer_check_valve \
+pipe_symbol|globe_valve_with_plug \
+pipe_symbol|vent_silencer \
+pipe_symbol|basket_strainer \
+pipe_symbol|blank \
+pipe_symbol|off_plot_connector_two_way \
+pipe_symbol|flame_arrestor \
+pipe_symbol|injection_quill \
+pipe_symbol|ejector_eductor \
+pipe_symbol|damper \
+pipe_symbol|angle_blowdown_valve \
+pipe_symbol|needle_valve \
+pipe_symbol|cone_strainer \
+pipe_symbol|manway \
+pipe_symbol|removable_spool_left \
+pipe_symbol|filter \
+pipe_symbol|removable_spool_right \
+pipe_symbol|double_gate_valve_with_plug \
+pipe_symbol|break_away_coupling \
+pipe_symbol|globe_valve_with_flange \
+pipe_symbol|end_gap_line \
+pipe_symbol|removable_spool_elbow \
+pipe_symbol|vendor_strainer \
+pipe_symbol|knife_valve \
+pipe_symbol|globe_valve_handwheel \
+pipe_symbol|diverter_valve \
+instrument_symbol|discrete_instruments_field_mounted \
+instrument_symbol|shared_display_and_control_primary_location_normally_accessible_to_an_operator \
+instrument_symbol|end_gap \
+instrument_symbol|plc_primary_location_normally_inaccessible_to_an_operator \
+instrument_symbol|chemical_seal_diaphragm \
+instrument_symbol|diaphragm \
+instrument_symbol|restriction_orifice \
+instrument_symbol|pressure_relief_or_safety_valve \
+instrument_symbol|plc_primary_location_normally_accessible_to_an_operator \
+instrument_symbol|discrete_hardware_interlock_field_mounted \
+instrument_symbol|cylinder \
+instrument_symbol|plc_field_mounted \
+instrument_symbol|vortex \
+instrument_symbol|handwheel \
+instrument_symbol|variable_area_flowmeter \
+instrument_symbol|shared_display_and_control_primary_location_normally_inaccessible_to_an_operator \
+instrument_symbol|discrete_instruments_auxiliary_location_normally_accessible_to_an_operator \
+instrument_symbol|pressure_reducing_regulator \
+instrument_symbol|discrete_instruments_primary_location_normally_accessible_to_an_operator \
+instrument_symbol|motor_operated \
+instrument_symbol|instrument_box \
+instrument_symbol|pilot_light_or_gauge_glass_illuminator \
+instrument_symbol|general_sight_glass \
+instrument_symbol|manual_operator \
+instrument_symbol|function_multiply \
+instrument_symbol|back_pressure_regulator \
+instrument_symbol|function_subtract \
+instrument_symbol|function_low_signal_selector \
+instrument_symbol|function_unspecified \
+instrument_symbol|function_high_signal_selector \
+instrument_symbol|venturi \
+instrument_symbol|function_derivative \
+instrument_symbol|coriolis_flowmeter \
+instrument_symbol|function_average \
+instrument_symbol|function_summation \
+instrument_symbol|restriction_orifice_multistage \
+instrument_symbol|safety_head_for_pressure_relief \
+instrument_symbol|thermal_mass_flowmeter \
+instrument_symbol|integral_orifice \
+instrument_symbol|function_special \
+instrument_symbol|orifice_valve \
+instrument_symbol|function_time \
+instrument_symbol|slide_valve \
+instrument_symbol|function_root \
+equipment_symbol|electric_motor_general \
+equipment_symbol|pump_centrifugal_type \
+equipment_symbol|vortex_breaker \
+equipment_symbol|tank_vessel \
+equipment_symbol|shell_type_e \
+equipment_symbol|vertical_drum \
+equipment_symbol|air_cooler \
+equipment_symbol|front_end_type_a \
+equipment_symbol|horizontal_drum \
+equipment_symbol|pump_positive_diaplacement \
+equipment_symbol|box_equipment_double_chain \
+equipment_symbol|real_end_type_s \
+equipment_symbol|gas_filter_bag_candle_or_cartridge_type \
+equipment_symbol|tank_vessel_with_dished_ends \
+equipment_symbol|boot_w_head \
+equipment_symbol|compressor_vacuum_pump_reciprocating_piston_type \
+equipment_symbol|in_line_static_mixer \
+equipment_symbol|blowdown_pot \
+equipment_symbol|heat_exchanger_of_double_pipe_type \
+equipment_symbol|conveyor_belt_type \
+equipment_symbol|shell_type_k \
+equipment_symbol|vent_silencer_equipment \
+equipment_symbol|sump_drum \
+equipment_symbol|shell_type_h \
+equipment_symbol|ultrasonic_type_meter \
+equipment_symbol|heat_exchanger_vendor \
+equipment_symbol|steam_turbine \
+equipment_symbol|boiler_heater \
+equipment_symbol|compressor_reciprocating_type_5 \
+equipment_symbol|compressor_centrifugal_type \
+equipment_symbol|pump_vertical_wet_pit \
+equipment_symbol|shell_type_x \
+equipment_symbol|pump_gear_type \
+equipment_symbol|filter_oil_vendor \
+equipment_symbol|front_end_type_b \
+equipment_symbol|shell_type_j \
+equipment_symbol|liquid_filter_general \
+equipment_symbol|real_end_type_u \
+equipment_symbol|compressor_reciprocating_type_4a \
+equipment_symbol|vessel_with_dished_roof_and_conical_bottom \
+equipment_symbol|debutanizer \
+equipment_symbol|front_end_type_d \
+equipment_symbol|sump_vendor \
+equipment_symbol|deethanizer \
+equipment_symbol|chloride_treater \
+equipment_symbol|turbine_general \
+equipment_symbol|compressor_reciprocating_type_4b \
+equipment_symbol|compressor_reciprocating_type_2a \
+equipment_symbol|tank_flat_roof \
+equipment_symbol|vendor_heater \
+equipment_symbol|farctionator_bottom \
+equipment_symbol|oil_cooler \
+equipment_symbol|reactor_type1 \
+equipment_symbol|reactor_type2 \
+equipment_symbol|reactor_type3 \
+equipment_symbol|heat_exchanger_packinox \
+equipment_symbol|gas_cylinder \
+unspecified_symbol|annotation \
+unspecified_symbol|spec_break"
+def get_symbol_class_def():
+    class_type_map = {}
+
+    lines = symbol_type_def_str.split(" ")
+
+    class_list = []
+    for i, line in enumerate(lines):
+        strs = line.split("|")
+        class_list.append(strs[1])
+        class_type_map[strs[1]] = strs[0]
+
+    class_list.append("text")
+    classes = tuple(class_list)
+
+    return classes, class_type_map
+

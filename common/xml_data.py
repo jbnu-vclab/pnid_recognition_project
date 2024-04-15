@@ -2,9 +2,11 @@ import sys
 sys.path.append('../..')
 
 import difflib
-from global_settings.symbol_class_def import classes
+import math
+from global_settings.symbol_class_def import get_symbol_class_def
 from common.symbol_object import SymbolObject, Vector2
 
+import xml
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import parse
 
@@ -37,6 +39,7 @@ class XMLData:
         return str
 
     def sanitize(self, symbol_object, fuzz_thr=0.8):
+        classes, _ = get_symbol_class_def()
         if not symbol_object.is_text:
             if symbol_object.cls not in classes:
                 if symbol_object.cls in self.fuzz_matching_cache:
@@ -57,16 +60,7 @@ class XMLData:
         for symbol_object in self.symbol_object_list:
             symbol_object.apply_scale(scale)
 
-    def __repr__(self):
-        return "file: {}, num symbols: {}".format(self.filepath, len(self.symbol_object_list))
-
-
-class FourpointXMLData(XMLData):
-    def __init__(self):
-        super().__init__()
-        self.symbol_object_list = []
-
-    def load_xml_from_file(self, filepath, sanitize=True):
+    def from_fourpoint_xml(self, filepath, sanitize=True):
         self.filepath = filepath
         self.tree = parse(filepath)
         self.root = self.tree.getroot()
@@ -100,7 +94,7 @@ class FourpointXMLData(XMLData):
                 degree = float(obj.findtext('degree'))
                 flip = True if obj.findtext('flip') == "y" else False
 
-                symbol_object = SymbolObject.from_fourpoint(type,cls,x1,y1,x2,y2,x3,y3,x4,y4,degree,flip)
+                symbol_object = SymbolObject.from_fourpoint(type, cls, x1, y1, x2, y2, x3, y3, x4, y4, degree, flip)
                 if sanitize:
                     if self.sanitize(symbol_object):
                         self.symbol_object_list.append(symbol_object)
@@ -117,23 +111,7 @@ class FourpointXMLData(XMLData):
                     }
                 )
 
-    def check_range(self, x1, y1, x2, y2, x3, y3, x4, y4):
-        if self.image_metadata:
-            width = self.image_metadata.width
-            height = self.image_metadata.height
-
-            if 0 <= x1 < width and 0 <= x2 < width and 0 <= x3 < width and 0 <= x4 < width and \
-                0 <= y1 < height and 0 <= y2 < height and 0 <= y3 < height and 0 <= y4 < height:
-                return True
-            return False
-        else:
-            return True
-
-class TwopointXMLData(XMLData):
-    def __init__(self):
-        super().__init__()
-
-    def load_xml_from_file(self, filepath, sanitize=True):
+    def from_twopoint_xml(self, filepath, sanitize=True):
         self.filepath = filepath
         self.tree = parse(filepath)
         self.root = self.tree.getroot()
@@ -167,7 +145,7 @@ class TwopointXMLData(XMLData):
                 flip = True if obj.findtext('flip') == "y" else False
                 is_large = True if obj.findtext('isLarge') == "y" else False
 
-                symbol_object = SymbolObject.from_twopoint(type,cls,min_point,max_point,degree,flip,is_large)
+                symbol_object = SymbolObject.from_twopoint(type, cls, min_point, max_point, degree, flip, is_large)
                 if sanitize:
                     if self.sanitize(symbol_object):
                         self.symbol_object_list.append(symbol_object)
@@ -184,10 +162,111 @@ class TwopointXMLData(XMLData):
                     }
                 )
 
-    def check_range(self, min_point, max_point):
-        if min_point.x <= max_point.x and min_point.y <= max_point.y:
+    def from_inference_result(self, result, scale, score_th):
+        classes, class_type_def = get_symbol_class_def()
+
+        for i, class_list in enumerate(result):
+            for symbol in class_list:
+                class_name = classes[i]
+                score = symbol[5]
+                if score > score_th:
+                    xmin = int((float(symbol[0]) - float(symbol[2]) * 0.5)/scale)
+                    ymin = int((float(symbol[1]) - float(symbol[3]) * 0.5)/scale)
+                    xmax = int((float(symbol[0]) + float(symbol[2]) * 0.5)/scale)
+                    ymax = int((float(symbol[1]) + float(symbol[3]) * 0.5)/scale)
+                    degree = float(symbol[4]) * (180 / math.pi) * -1
+
+                    if class_name == 'text':
+                        type_name = 'text'
+                    else:
+                        type_name = class_type_def[class_name]
+
+                    symbol_object = SymbolObject.from_twopoint(type_name, class_name, Vector2(xmin, ymin),
+                                                               Vector2(xmax, ymax), degree)
+                    self.symbol_object_list.append(symbol_object)
+
+    def check_range(self, x1, y1, x2, y2, x3, y3, x4, y4):
+        if self.image_metadata:
+            width = self.image_metadata.width
+            height = self.image_metadata.height
+
+            if 0 <= x1 < width and 0 <= x2 < width and 0 <= x3 < width and 0 <= x4 < width and \
+                    0 <= y1 < height and 0 <= y2 < height and 0 <= y3 < height and 0 <= y4 < height:
+                return True
+            return False
+        else:
             return True
-        return False
+
+    def write_xml(self, filepath):
+        self.root = ET.Element("annotation")
+
+        for symbol_object in self.symbol_object_list:
+            elementSymbol = ET.Element("symbol_object")
+            elementType = ET.Element("type")
+            elementType.text = symbol_object.type
+            elementClass = ET.Element("class")
+            elementClass.text = symbol_object.cls
+
+            elementBndbox = ET.Element("bndbox")
+            elementXmin = ET.Element("xmin")
+            elementXmin.text = str(symbol_object.min_point.x)
+            elementYmin = ET.Element("ymin")
+            elementYmin.text = str(symbol_object.min_point.y)
+            elementXmax = ET.Element("xmax")
+            elementXmax.text = str(symbol_object.max_point.x)
+            elementYmax = ET.Element("ymax")
+            elementYmax.text = str(symbol_object.max_point.y)
+
+            elementBndbox.append(elementXmin)
+            elementBndbox.append(elementYmin)
+            elementBndbox.append(elementXmax)
+            elementBndbox.append(elementYmax)
+
+            elementIsLarge = ET.Element("isLarge")
+            elementIsLarge.text = symbol_object.is_large
+
+            elementDegree = ET.Element("degree")
+            elementDegree.text = str(symbol_object.degree)
+
+            elementFlip = ET.Element("flip")
+            elementFlip.text = "n"
+
+            elementEtc = ET.Element("etc")
+
+            elementSymbol.append(elementType)
+            elementSymbol.append(elementClass)
+            elementSymbol.append(elementBndbox)
+            elementSymbol.append(elementIsLarge)
+            elementSymbol.append(elementDegree)
+            elementSymbol.append(elementFlip)
+            elementSymbol.append(elementEtc)
+
+            self.root.append(elementSymbol)
+
+        self.indent(self.root)
+        self.tree= ET.ElementTree(self.root)
+        self.tree.write(filepath)
+
+    def indent(self, elem, level=0):  # 자료 출처 https://goo.gl/J8VoDK
+        i = "\n" + level * "  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent(elem, level + 1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
+    def __repr__(self):
+        return "file: {}, num symbols: {}".format(self.filepath, len(self.symbol_object_list))
+
+
+
 
 
 if __name__ == "__main__":
