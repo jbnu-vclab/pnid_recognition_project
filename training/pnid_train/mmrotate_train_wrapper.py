@@ -19,11 +19,12 @@ from mmrotate.datasets import build_dataset
 from mmrotate.models import build_detector
 from mmrotate.utils import collect_env, get_root_logger, setup_multi_processes
 
-from global_settings.symbol_class_def import classes
+from global_settings.symbol_class_def import get_symbol_class_def
 
 def get_mmrotate_parser():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('config', help='train config file path')
+    parser.add_argument('train_option', help='train option file path')
+    parser.add_argument('--config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
@@ -76,16 +77,21 @@ def get_mmrotate_parser():
     return parser
 
 
-def override_config(cfg, args):
-    cfg.data_root = args.data_root
+def override_config(cfg, options):
+    cfg.data_root = options['data_root']
+    cfg.work_dir = options['work_dir']
+
+    classes, _ = get_symbol_class_def()
 
     cfg.classes = classes
     cfg.data.train.classes = classes
     cfg.data.val.classes = classes
     cfg.data.test.classes = classes
 
-    # TODO: class number override
-    # TODO: img_scale override
+    for i in range(len(cfg.model.roi_head.bbox_head)):
+        cfg.model.roi_head.bbox_head[i].num_classes = len(classes)
+
+    # TODO: consider img_scale override
 
     cfg.data.train.ann_file = os.path.join(cfg.data_root, 'train/annfiles')
     cfg.data.val.ann_file = os.path.join(cfg.data_root, 'val/annfiles')
@@ -95,14 +101,19 @@ def override_config(cfg, args):
     cfg.data.val.img_prefix = os.path.join(cfg.data_root, 'val/images')
     cfg.data.test.img_prefix = os.path.join(cfg.data_root, 'test/images')
 
-    if not args.use_wandb:
+    if not options['use_wandb']:
         for h in cfg.log_config.hooks:
             if h.type == 'WandbLoggerHook':
                 cfg.log_config.hooks.remove(h)
 
 
-def train(args):
-    cfg = Config.fromfile(args.config)
+def train(options, args):
+    cfg = Config.fromfile(options['mmrotate_config_path'])
+    args.config = options['mmrotate_config_path']
+
+    if 'LOCAL_RANK' not in os.environ:
+        os.environ['LOCAL_RANK'] = str(args.local_rank)
+
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
@@ -181,10 +192,12 @@ def train(args):
     # --------------------------------------------------------------------------
     # --- override configs and run ---------------------------------------------
     # --------------------------------------------------------------------------
-    override_config(cfg, args)
+    override_config(cfg, options)
 
     # dump config
     cfg.dump(osp.join(cfg.work_dir, osp.basename(args.config)))
+
+    cfg.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     model = build_detector(
         cfg.model,

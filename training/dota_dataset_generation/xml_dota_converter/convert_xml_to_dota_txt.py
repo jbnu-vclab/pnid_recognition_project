@@ -1,14 +1,14 @@
 import sys
-sys.path.append('../..')
+sys.path.append('../../..')
 
 import os
 import os.path as osp
 
-from common.xml_data import FourpointXMLData
+from common.xml_data import XMLData
 
 def convert_xml_to_dota_single(xml_path, dota_path, scale):
-    xml_data = FourpointXMLData()
-    xml_data.load_xml_from_file(xml_path)
+    xml_data = XMLData()
+    xml_data.from_fourpoint_xml(xml_path)
 
     if scale != 1.0:
         xml_data.apply_scale(scale)

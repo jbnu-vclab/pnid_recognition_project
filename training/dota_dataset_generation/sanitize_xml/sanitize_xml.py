@@ -1,14 +1,14 @@
 import sys
-sys.path.append('../..')
+sys.path.append('../../..')
 
 import os
 import os.path as osp
 
-from common.xml_data import FourpointXMLData
+from common.xml_data import XMLData
 
 def convert_sanitized_xml(xml_path, out_xml_path):
-    xml_data = FourpointXMLData()
-    xml_data.load_xml_from_file(xml_path, sanitize=True)
+    xml_data = XMLData()
+    xml_data.from_fourpoint_xml(xml_path, sanitize=True)
 
     xml_data.tree.write(out_xml_path)
     return True

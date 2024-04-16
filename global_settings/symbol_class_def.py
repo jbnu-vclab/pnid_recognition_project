@@ -176,6 +176,7 @@ equipment_symbol|heat_exchanger_packinox \
 equipment_symbol|gas_cylinder \
 unspecified_symbol|annotation \
 unspecified_symbol|spec_break"
+
 def get_symbol_class_def():
     class_type_map = {}
 

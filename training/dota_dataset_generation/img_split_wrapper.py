@@ -8,28 +8,22 @@ from multiprocessing import Pool, Manager
 import training.dota_dataset_generation.external.img_split as imgsplit
 import common.util as util
 
-def convert_args(args, img_dir, ann_dir, save_dir):
-    # parser = argparse.ArgumentParser(description='Splitting images')
-    # imgsplit.add_parser(parser)
-    # call_arg = parser.parse_args()
-    call_arg = copy.deepcopy(args)
+class ImgSplitArgs:
+    def __init__(self, training_options, img_dir, ann_dir, save_dir):
+        self.nproc = 10
+        self.sizes = [training_options['params']['patch_size']]
+        self.gaps = [training_options['params']['patch_gap']]
+        self.rates = [1.0]
+        self.img_rate_thr = training_options['params']['img_rate_thr']
+        self.iof_thr = training_options['params']['iof_thr']
+        self.no_padding = False
+        self.padding_value = [104, 116, 124]
+        self.save_ext = ".png"
+        self.save_dir = save_dir
 
-    call_arg.nproc = 10
-    call_arg.sizes = [args.size]
-    call_arg.gaps = [args.gap]
-    call_arg.rates = [1.0]
-    call_arg.img_rate_thr = args.img_rate_thr
-    call_arg.iof_thr = args.iof_thr
-    call_arg.no_padding = False
-    call_arg.padding_value = [104, 116, 124]
-    call_arg.save_ext = ".png"
-    call_arg.save_dir = save_dir
-
-    call_arg.img_dirs = [img_dir]
-    call_arg.ann_dirs = [ann_dir]
-    call_arg.save_dir = save_dir
-
-    return call_arg
+        self.img_dirs = [img_dir]
+        self.ann_dirs = [ann_dir]
+        self.save_dir = save_dir
 
 def call_img_split(args):
     if args.ann_dirs is None:

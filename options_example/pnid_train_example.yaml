@@ -1,0 +1,10 @@
+# PNID Train
+
+pnid_train:
+  dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_dataset/dataset_gen_options.yaml'
+  mmrotate_config_path: '/home/diskhkme/Dev/PNID/pnid_recognition_project/options_example/roi_trans_r50_fpn_1x_dota_le90.py'
+  data_root: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_dataset'
+  work_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train'
+  use_wandb: false
+
+
