@@ -1,0 +1,19 @@
+# Inference images
+# NOTE: image scaling will be applied to img_dir/img_files
+
+pnid_inference:
+  img_dir: '/home/diskhkme/Dev/PNID/dataset/test_img_123'
+#  img_files: ['26071-200-M6-052-00001', '26071-200-M6-052-00002', '26071-200-M6-052-00003']
+  img_files: null # if null, all files in img_dir is inferenced
+  dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_dataset/dataset_gen_options.yaml'
+
+  mmrotate_config_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train/roi_trans_r50_fpn_1x_dota_le90.py'
+  mmrotate_checkpoint_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train/epoch_5.pth'
+
+  params:
+    merge_iou_th: 0.1
+    score_th: 0.1
+
+  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train/inference_123'
+
+
