@@ -22,7 +22,6 @@ class XMLData:
     def __init__(self):
         self.image_metadata = None
         self.symbol_object_list = []
-        self.error_list = []
         self.tree = None
         self.root = None
 
@@ -38,8 +37,10 @@ class XMLData:
 
         return str
 
-    def sanitize(self, symbol_object, fuzz_thr=0.8):
+    def is_sane(self, symbol_object, fuzz_thr=0.8):
         classes, _ = get_symbol_class_def()
+
+        # class definition check
         if not symbol_object.is_text:
             if symbol_object.cls not in classes:
                 if symbol_object.cls in self.fuzz_matching_cache:
@@ -53,6 +54,13 @@ class XMLData:
                     symbol_object.cls = self.fuzz_matching_cache[symbol_object.cls]
                 else:
                     return False  # failed matching
+
+        # range check
+        if self.image_metadata:
+            if self.check_range(symbol_object):
+                return True
+            else:
+                return False
 
         return True
 
@@ -76,40 +84,32 @@ class XMLData:
 
         for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")
-            try:
-                x1 = int(bndbox.findtext("x1"))
-                y1 = int(bndbox.findtext("y1"))
-                x2 = int(bndbox.findtext("x2"))
-                y2 = int(bndbox.findtext("y2"))
-                x3 = int(bndbox.findtext("x3"))
-                y3 = int(bndbox.findtext("y3"))
-                x4 = int(bndbox.findtext("x4"))
-                y4 = int(bndbox.findtext("y4"))
 
-                if not self.check_range(x1, y1, x2, y2, x3, y3, x4, y4):
-                    raise Exception('out of range')
+            x1 = int(bndbox.findtext("x1"))
+            y1 = int(bndbox.findtext("y1"))
+            x2 = int(bndbox.findtext("x2"))
+            y2 = int(bndbox.findtext("y2"))
+            x3 = int(bndbox.findtext("x3"))
+            y3 = int(bndbox.findtext("y3"))
+            x4 = int(bndbox.findtext("x4"))
+            y4 = int(bndbox.findtext("y4"))
 
-                type = obj.findtext('type')
-                cls = obj.findtext('class')
-                degree = float(obj.findtext('degree'))
-                flip = True if obj.findtext('flip') == "y" else False
+            type = obj.findtext('type')
+            cls = obj.findtext('class')
+            degree = float(obj.findtext('degree'))
+            flip = True if obj.findtext('flip') == "y" else False
 
-                symbol_object = SymbolObject.from_fourpoint(type, cls, x1, y1, x2, y2, x3, y3, x4, y4, degree, flip)
-                if sanitize:
-                    if self.sanitize(symbol_object):
-                        self.symbol_object_list.append(symbol_object)
-                    else:
-                        self.root.remove(obj)
-                        raise Exception('class does not exist in symbol_class_def in global_settings')
+            symbol_object = SymbolObject.from_fourpoint(type, cls, x1, y1, x2, y2, x3, y3, x4, y4, degree, flip)
+            if sanitize:
+                if self.is_sane(symbol_object):
+                    self.symbol_object_list.append(symbol_object)
+                else:
+                    self.root.remove(obj)
+                    print('class does not exist in symbol_class_def in global_settings')
+            else:
+                self.symbol_object_list.append(symbol_object)
 
-            except Exception as e:
-                self.error_list.append(
-                    {
-                        'index': i,
-                        'obj_info': ET.tostring(obj, encoding='unicode'),
-                        'error_message': str(e)
-                    }
-                )
+        return self
 
     def from_twopoint_xml(self, filepath, sanitize=True):
         self.filepath = filepath
@@ -127,40 +127,32 @@ class XMLData:
 
         for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")
-            try:
-                x1 = int(bndbox.findtext("xmin"))
-                y1 = int(bndbox.findtext("ymin"))
-                x2 = int(bndbox.findtext("xmax"))
-                y2 = int(bndbox.findtext("ymax"))
 
-                min_point = Vector2(x1, y1)
-                max_point = Vector2(x2, y2)
+            x1 = int(bndbox.findtext("xmin"))
+            y1 = int(bndbox.findtext("ymin"))
+            x2 = int(bndbox.findtext("xmax"))
+            y2 = int(bndbox.findtext("ymax"))
 
-                if not self.check_range(min_point, max_point):
-                    raise Exception('min is greater than max')
+            min_point = Vector2(x1, y1)
+            max_point = Vector2(x2, y2)
 
-                type = obj.findtext('type')
-                cls = obj.findtext('class')
-                degree = float(obj.findtext('degree'))
-                flip = True if obj.findtext('flip') == "y" else False
-                is_large = True if obj.findtext('isLarge') == "y" else False
+            type = obj.findtext('type')
+            cls = obj.findtext('class')
+            degree = float(obj.findtext('degree'))
+            flip = True if obj.findtext('flip') == "y" else False
+            is_large = True if obj.findtext('isLarge') == "y" else False
 
-                symbol_object = SymbolObject.from_twopoint(type, cls, min_point, max_point, degree, flip, is_large)
-                if sanitize:
-                    if self.sanitize(symbol_object):
-                        self.symbol_object_list.append(symbol_object)
-                    else:
-                        self.root.remove(obj)
-                        raise Exception('class does not exist in symbol_class_def in global_settings')
+            symbol_object = SymbolObject.from_twopoint(type, cls, min_point, max_point, degree, flip, is_large)
+            if sanitize:
+                if self.is_sane(symbol_object):
+                    self.symbol_object_list.append(symbol_object)
+                else:
+                    self.root.remove(obj)
+                    print('class does not exist in symbol_class_def in global_settings')
+            else:
+                self.symbol_object_list.append(symbol_object)
 
-            except Exception as e:
-                self.error_list.append(
-                    {
-                        'index': i,
-                        'obj_info': ET.tostring(obj, encoding='unicode'),
-                        'error_message': str(e)
-                    }
-                )
+        return self
 
     def from_inference_result(self, result, scale, score_th):
         classes, class_type_def = get_symbol_class_def()
@@ -185,13 +177,15 @@ class XMLData:
                                                                Vector2(xmax, ymax), degree)
                     self.symbol_object_list.append(symbol_object)
 
-    def check_range(self, x1, y1, x2, y2, x3, y3, x4, y4):
+        return self
+
+    def check_range(self, symbol_object):
         if self.image_metadata:
             width = self.image_metadata.width
             height = self.image_metadata.height
 
-            if 0 <= x1 < width and 0 <= x2 < width and 0 <= x3 < width and 0 <= x4 < width and \
-                    0 <= y1 < height and 0 <= y2 < height and 0 <= y3 < height and 0 <= y4 < height:
+            if 0 <= symbol_object.min_point.x < width and 0 <= symbol_object.max_point.x < width and \
+                    0 <= symbol_object.min_point.y < height and 0 <= symbol_object.max_point.y < height:
                 return True
             return False
         else:

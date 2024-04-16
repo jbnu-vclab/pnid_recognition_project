@@ -2,6 +2,8 @@ import sys
 sys.path.append('../..')
 
 import math
+import numpy as np
+from shapely import Polygon
 
 class Vector2:
     def __init__(self, x: float=0, y:float=0):
@@ -16,6 +18,9 @@ class Vector2:
 
     def __floordiv__(self, other):
         return Vector2(math.floor(self.x / other), math.floor(self.y / other))
+
+    def __truediv__(self, other):
+        return Vector2(self.x / other, self.y / other)
 
     def __mul__(self, other):
         return Vector2(math.floor(self.x * other), math.floor(self.y * other))
@@ -34,14 +39,14 @@ class SymbolObject:
     def __init__(self, type, cls, min_point, max_point, degree, flip, is_large, is_from_fourpoint, four_points):
         self.type = type
         self.cls = cls
-        self.min_point = min_point
+        self.min_point = min_point # min & max points are points before rotated
         self.max_point = max_point
         self.degree = degree
         self.flip = flip
         self.is_large = is_large
 
         self.is_from_fourpoint = is_from_fourpoint
-        self.four_points = four_points
+        self.four_points = four_points # four point is rotated points
 
         self.is_text: bool = False
         if "text" in type:
@@ -73,14 +78,15 @@ class SymbolObject:
     def from_twopoint(self, type, cls, min_point, max_point, degree, flip=False, is_large=False):
         p1 = min_point
         p2 = Vector2(max_point.x, min_point.y)
-        p3 = Vector2(min_point.x, max_point.y)
-        p4 = max_point
+        p3 = max_point
+        p4 = Vector2(min_point.x, max_point.y)
 
+        center = (p3 + p1)/2.0
         four_points = [Vector2() for i in range(4)]
-        four_points[0] = p1.rotated(math.radians(-degree)).to_int() # degree convention is reverse
-        four_points[1] = p2.rotated(math.radians(-degree)).to_int()
-        four_points[2] = p3.rotated(math.radians(-degree)).to_int()
-        four_points[3] = p4.rotated(math.radians(-degree)).to_int()
+        four_points[0] = ((p1-center).rotated(math.radians(-degree)) + center).to_int() # degree convention is reverse
+        four_points[1] = ((p2-center).rotated(math.radians(-degree)) + center).to_int()
+        four_points[2] = ((p3-center).rotated(math.radians(-degree)) + center).to_int()
+        four_points[3] = ((p4-center).rotated(math.radians(-degree)) + center).to_int()
 
         return SymbolObject(type, cls, min_point, max_point, degree, flip, is_large, is_from_fourpoint=False, four_points=four_points)
 
@@ -93,6 +99,19 @@ class SymbolObject:
         str += f'{category} {difficulty}'
 
         return str
+
+    def get_fourpoint_polygon(self):
+        coords = [round(float(self.four_points[0].x)), round(float(self.four_points[0].y)),
+                round(float(self.four_points[1].x)), round(float(self.four_points[1].y)),
+                round(float(self.four_points[2].x)), round(float(self.four_points[2].y)),
+                round(float(self.four_points[3].x)), round(float(self.four_points[3].y)),]
+        coords = np.array([int(i) for i in coords])
+        coords = coords.reshape(4, 2)
+        coords = coords.tolist()
+
+        # print(coords)
+
+        return Polygon(coords)
 
     def apply_scale(self, scale = 1.0):
         self.min_point = self.min_point * scale

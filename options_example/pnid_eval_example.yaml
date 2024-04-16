@@ -1,0 +1,10 @@
+# PNID Eval
+
+pnid_eval:
+  gt_path: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML_Sanitized'
+  dt_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train/inference_123'
+
+  params:
+    iou_th: [0.5, 0.6, 0.7, 0.8, 0.9]
+
+  save_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_half_train/inference_123/eval_result.txt'
