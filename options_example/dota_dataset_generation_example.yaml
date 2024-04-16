@@ -17,5 +17,3 @@ dota_dataset_generation:
     iof_thr: 0.7
 
   remove_tmp_files: true
-
-

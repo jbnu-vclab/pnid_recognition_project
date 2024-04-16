@@ -12,7 +12,6 @@ Training related modules
 * [pnid_train](./pnid_train)
   * Train P&ID detection using [MMRotate](../mmrotate)
   * Follow the instruction of [MMRotate Installation](https://github.com/open-mmlab/mmrotate?tab=readme-ov-file#installation) to prepare the environment
-  * Tested on MMRotate 0.3.4
 * [dota_dataset_generation](./dota_dataset_generation)
   * Generate patch-segmented image files and patch-segmented DOTA txt files
   * (NOTE) Used [img_split](./dota_dataset_generation/external/img_split.py) from MMRotate without modification
