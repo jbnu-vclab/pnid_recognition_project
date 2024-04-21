@@ -4,7 +4,7 @@ import time
 from functools import partial, reduce
 from multiprocessing import Pool, Manager
 import pnid_recognition_project.training.dota_dataset_generation.external.img_split as imgsplit
-import pnid_recognition_project.common.util as util
+import pnid_recognition_project.common.fileutil as fileutil
 
 class ImgSplitArgs:
     def __init__(self, training_options, img_dir, ann_dir, save_dir):
@@ -37,12 +37,12 @@ def call_img_split(args):
 
     # remove files and recreate
     if os.path.exists(save_imgs):
-        util.remove_files_in_dir(save_imgs)
+        fileutil.remove_files_in_dir(save_imgs)
     else:
         os.makedirs(save_imgs)
 
     if os.path.exists(save_files):
-        util.remove_files_in_dir(save_files)
+        fileutil.remove_files_in_dir(save_files)
     else:
         os.makedirs(save_files)
     logger = imgsplit.setup_logger(args.save_dir)

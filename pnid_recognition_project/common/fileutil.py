@@ -6,6 +6,14 @@ def remove_files_in_dir(dir):
         if os.path.isfile(existing_filepath):
             os.remove(existing_filepath)
 
+def dict_to_csv(dict):
+    line = ""
+    for k,v in dict.items():
+        line += str(k) + "," + str(v) + ",\n"
+
+    return line
+
+
 def check_prompt(msg):
     yes = {'yes', 'y', 'ye', ''}
     no = {'no', 'n'}
