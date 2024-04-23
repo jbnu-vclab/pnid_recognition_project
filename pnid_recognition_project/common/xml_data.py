@@ -195,6 +195,14 @@ class XMLData:
             return True
 
     def write_xml(self, filepath):
+        self._construct_xml_tree()
+        self.tree.write(filepath)
+
+    def get_xml_byte(self):
+        self._construct_xml_tree()
+        return ET.tostring(self.root, encoding='utf-8', method='xml')
+
+    def _construct_xml_tree(self):
         self.root = ET.Element("annotation")
 
         for symbol_object in self.symbol_object_list:
@@ -241,8 +249,7 @@ class XMLData:
             self.root.append(elementSymbol)
 
         self._indent(self.root)
-        self.tree= ET.ElementTree(self.root)
-        self.tree.write(filepath)
+        self.tree = ET.ElementTree(self.root)
 
     def _indent(self, elem, level=0):  # 자료 출처 https://goo.gl/J8VoDK
         i = "\n" + level * "  "

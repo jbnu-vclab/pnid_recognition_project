@@ -52,3 +52,8 @@ class InferenceEngine:
         result = inference_detector_by_patches(self.model, dst, [self.patch_size],
                                       [self.patch_gap], [1.0], merge_iou_th)
         return result
+
+    def inference_image_from_tensor(self, img_tensor, merge_iou_th):
+        result = inference_detector_by_patches(self.model, img_tensor, [self.patch_size],
+                                               [self.patch_gap], [1.0], merge_iou_th)
+        return result
