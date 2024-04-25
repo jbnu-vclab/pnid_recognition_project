@@ -71,6 +71,24 @@ class XMLData:
         for symbol_object in self.symbol_object_list:
             symbol_object.apply_scale(scale)
 
+    @staticmethod
+    def is_twopoint_format(filepath):
+        tree = parse(filepath)
+        root = tree.getroot()
+
+        for sym in root.findall("symbol_object"):
+            bndbox = sym.find("bndbox")
+            xmin = bndbox.find('xmin')
+            if xmin is not None:
+                return True
+
+            x1 = bndbox.find('x1')
+            if x1 is None:
+                assert False, "xml format check failed!"
+            else:
+                return False
+
+
     def from_fourpoint_xml(self, filepath, sanitize=True):
         self.filepath = filepath
         self.tree = parse(filepath)
@@ -83,7 +101,8 @@ class XMLData:
             depth = int(self.root.find("size").findtext("depth"))
             self.image_metadata = ImageMetadata(filename, width, height, depth)
         except:
-            print("no img file metadata")
+            #print("no img file metadata")
+            pass
 
         for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")
@@ -126,7 +145,8 @@ class XMLData:
             depth = int(self.root.find("size").findtext("depth"))
             self.image_metadata = ImageMetadata(filename, width, height, depth)
         except:
-            print("no img file metadata")
+            # print("no img file metadata")
+            pass
 
         for i, obj in enumerate(self.root.iter("symbol_object")):
             bndbox = obj.find("bndbox")

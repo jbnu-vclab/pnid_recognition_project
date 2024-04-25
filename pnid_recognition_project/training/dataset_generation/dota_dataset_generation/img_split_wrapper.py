@@ -3,7 +3,7 @@ import os
 import time
 from functools import partial, reduce
 from multiprocessing import Pool, Manager
-import pnid_recognition_project.training.dota_dataset_generation.external.img_split as imgsplit
+import pnid_recognition_project.training.dataset_generation.dota_dataset_generation.external.img_split as imgsplit
 import pnid_recognition_project.common.fileutil as fileutil
 
 class ImgSplitArgs:

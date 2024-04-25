@@ -7,13 +7,15 @@ import shutil
 import yaml
 import cv2
 
-from pnid_recognition_project.training.dota_dataset_generation.parse_options import parse_options
-from pnid_recognition_project.training.dota_dataset_generation.img_split_wrapper import call_img_split, ImgSplitArgs
-from pnid_recognition_project.training.dota_dataset_generation.convert_xml_to_dota_txt import convert_xml_to_dota_txt
-from pnid_recognition_project.training.dota_dataset_generation.sanitize_xml import convert_xmls_to_sanitized_xmls
+from pnid_recognition_project.training.dataset_generation.dota_dataset_generation.parse_options import parse_options
+from pnid_recognition_project.training.dataset_generation.dota_dataset_generation.img_split_wrapper import call_img_split, ImgSplitArgs
+from pnid_recognition_project.training.dataset_generation.dota_dataset_generation.convert_xml_to_dota_txt import convert_xml_to_dota_txt
+from pnid_recognition_project.training.dataset_generation.sanitize_xml import convert_xmls_to_sanitized_xmls
 from pnid_recognition_project.global_settings.validation_test_split import val_drawings, test_drawings
 
 phase = ['train', 'test', 'val']
+
+# TODO: move logics to pnid_recognition_project/training/dataset_generation/dota_dataset_generation
 
 def copy_files_to_tmp_dir(filenames, source_dir, dest_dir):
     dota_files = [f for f in os.listdir(source_dir) if osp.splitext(f)[0] in filenames]
