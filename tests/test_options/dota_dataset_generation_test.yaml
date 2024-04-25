@@ -1,0 +1,19 @@
+# Training dataset generation
+
+dota_dataset_generation:
+  img_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/JPG'
+  data_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML'
+  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter'
+
+  preprocess:
+    sanitize_xml: true
+    sanitized_xml_out_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML_Sanitized'
+
+  params:
+    img_scale: 0.25
+    patch_size: 800
+    patch_gap: 500
+    img_rate_thr: 0.6
+    iof_thr: 0.7
+
+  remove_tmp_files: false
