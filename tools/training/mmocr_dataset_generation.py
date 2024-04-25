@@ -23,6 +23,9 @@ def generate_mmocr_dataset():
 
     dataset_options = parse_options()
 
+    if dataset_options['params']['seed']:
+        random.seed(dataset_options['params']['seed'])
+
     # 0) generate required dirs
     save_dir = dataset_options['save_dir']
     if os.path.exists(save_dir):
@@ -69,9 +72,16 @@ def generate_mmocr_dataset():
             elif p == 'test':
                 phase_filenames[p] = [f for f in all_files if f not in phase_filenames['train'] and f not in phase_filenames['val']]
 
+    # sort filenames for debugging easiness
+    for p in phase:
+        phase_filenames[p].sort()
+
+
     # 3) call do_text_split
     for p in phase:
-        do_text_split(img_dir, data_dir, p, phase_filenames[p], phase_save_dirs[p], dataset_options['params']['img_scale'])
+    # p = 'val'
+        do_text_split(img_dir, data_dir, p, phase_filenames[p], phase_save_dirs[p],
+                      dataset_options['params']['img_scale'], dataset_options['params']['ignore_newline_char'])
 
     # 4) dump yaml for reference
     with open(os.path.join(dataset_options['save_dir'],'textrecog_dataset_gen_options.yaml'), 'w') as file:

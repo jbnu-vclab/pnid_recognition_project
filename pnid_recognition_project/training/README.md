@@ -18,7 +18,7 @@ Training related modules
 
 ## Modules
 
-* [pnid_train](pnid_train)
+* [pnid_train](symbol_train)
   * Train P&ID detection using [MMRotate](../../mmrotate)
   * Follow the instruction of [MMRotate Installation](https://github.com/open-mmlab/mmrotate?tab=readme-ov-file#installation) to prepare the environment
 * [dota_dataset_generation](dataset_generation/dota_dataset_generation)

@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from pnid_recognition_project.common.xml_data import XMLData
 
-def segment_text_images(img_path, xml_path, out_dir, ann, scale):
+def segment_text_images(img_path, xml_path, out_dir, ann, scale, ignore_newline):
     img = cv2.imread(img_path)
     base_filename = osp.basename(xml_path).replace(".xml", "")
 
@@ -23,6 +23,9 @@ def segment_text_images(img_path, xml_path, out_dir, ann, scale):
     img_index = 0
     for symbol_object in xml_data.symbol_object_list:
         if not symbol_object.is_text:
+            continue
+
+        if ignore_newline and '\n' in symbol_object.cls:
             continue
 
         x,y,w,h = symbol_object.get_aabb() # x,y,w,h
@@ -62,21 +65,26 @@ def segment_text_images(img_path, xml_path, out_dir, ann, scale):
         cv2.imwrite(out_img_path, crop_img)
 
         # https://github.com/open-mmlab/mmocr/blob/main/mmocr/datasets/recog_text_dataset.py
-        ann.append({'filename': out_img_filename, 'text': symbol_object.cls})
+        text_instance = [{"text": symbol_object.cls}]
+        ann.append({'instances': text_instance, 'img_path': out_img_filename})
 
         img_index += 1
 
-def do_text_split(img_dir, xml_dir, phase, target_filenames, out_dir, scale):
+def do_text_split(img_dir, xml_dir, phase, target_filenames, out_dir, scale, ignore_newline):
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
 
-    textrecog_ann = []
+    textrecog_ann = {}
+    textrecog_ann['metainfo'] = {"dataset_type": "TextRecogDataset", "task_name": "textrecog"}
+    textrecog_ann['data_list'] = []
+
     xml_files = [f for f in os.listdir(xml_dir) if 'xml' in osp.splitext(f)[1] and osp.splitext(f)[0] in target_filenames]
     img_files = [f for f in os.listdir(img_dir) if 'jpg' in osp.splitext(f)[1] or 'png' in osp.splitext(f)[1]]
     img_files = [f for f in img_files if osp.splitext(f)[0] in target_filenames]
 
     for xml_file in tqdm(xml_files):
         xml_filename = osp.splitext(xml_file)[0]
+
         corr_img_files = [f for f in img_files if xml_filename in f]
 
         if len(corr_img_files) == 1:
@@ -87,7 +95,7 @@ def do_text_split(img_dir, xml_dir, phase, target_filenames, out_dir, scale):
         xml_path = osp.join(xml_dir, xml_file)
         img_path = osp.join(img_dir, img_file)
 
-        segment_text_images(img_path, xml_path, out_dir, textrecog_ann, scale)
+        segment_text_images(img_path, xml_path, out_dir, textrecog_ann['data_list'], scale, ignore_newline)
 
     ann_path = osp.join(out_dir, f'ann_{phase}.json')
     with open(ann_path, 'w') as f:

@@ -1,27 +1,12 @@
 # MMOCR Training dataset generation
 
 # (synthetic data case)
-#mmocr_dataset_generation:
-#  img_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/dataset'
-#  data_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/dataset'
-#  save_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/mmocr_dataset'
-#  use_global_split: false # if true, use definition in `global_settings/validation_test_split`, else random
-#  train_val_ratio: [0.8, 0.1] # used only if use_global_split is false
-#
-#  preprocess:
-#    sanitize_xml: false
-#    sanitized_xml_out_dir: null
-#
-#  params:
-#    img_scale: 1.0
-
-# (PNID Drawing data case)
 mmocr_dataset_generation:
-  img_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/JPG'
-  data_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML_Sanitized'
-  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog'
-  use_global_split: true # if true, use definition in `global_settings/validation_test_split`, else random
-  train_val_ratio: null # used only if use_global_split is false
+  img_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/dataset'
+  data_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/dataset'
+  save_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/mmocr_dataset'
+  use_global_split: false # if true, use definition in `global_settings/validation_test_split`, else random
+  train_val_ratio: [0.8, 0.1] # used only if use_global_split is false
 
   preprocess:
     sanitize_xml: false
@@ -29,3 +14,22 @@ mmocr_dataset_generation:
 
   params:
     img_scale: 1.0
+    ignore_newline_char: true
+    seed: 1
+
+# (PNID Drawing data case)
+#mmocr_dataset_generation:
+#  img_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/JPG'
+#  data_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML_Sanitized'
+#  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog'
+#  use_global_split: true # if true, use definition in `global_settings/validation_test_split`, else random
+#  train_val_ratio: null # used only if use_global_split is false
+#
+#  preprocess:
+#    sanitize_xml: false
+#    sanitized_xml_out_dir: null
+#
+#  params:
+#    img_scale: 1.0
+#    ignore_newline_char: true
+#    seed: 1
