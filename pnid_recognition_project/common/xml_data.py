@@ -88,6 +88,12 @@ class XMLData:
             else:
                 return False
 
+    def from_xml(self, filepath, sanitize=True):
+        if XMLData.is_twopoint_format(filepath):
+            return self.from_twopoint_xml(filepath, sanitize)
+        else:
+            return self.from_fourpoint_xml(filepath, sanitize)
+
 
     def from_fourpoint_xml(self, filepath, sanitize=True):
         self.filepath = filepath

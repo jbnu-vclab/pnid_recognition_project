@@ -7,6 +7,7 @@ import os.path as osp
 from pnid_recognition_project.common.xml_data import XMLData
 
 def write_dota_txt(source_xml_path, target_dota_path, scale):
+    # TODO: change xml reading to use from_xml fct
     if XMLData.is_twopoint_format(source_xml_path):
         xml_data = XMLData().from_twopoint_xml(source_xml_path)
     else:
