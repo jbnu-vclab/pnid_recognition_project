@@ -7,3 +7,6 @@
 [submodule "mmrotate"]
 	path = mmrotate
 	url = https://github.com/open-mmlab/mmrotate.git
+[submodule "mmocr"]
+	path = mmocr
+	url = https://github.com/open-mmlab/mmocr.git

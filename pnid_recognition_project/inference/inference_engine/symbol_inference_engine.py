@@ -8,7 +8,7 @@ from mmrotate.models import build_detector
 from mmrotate.apis import inference_detector_by_patches
 
 
-class InferenceEngine:
+class SymbolInferenceEngine:
     def __init__(self):
         self.model = None
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

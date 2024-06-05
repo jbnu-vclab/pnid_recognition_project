@@ -1,0 +1,20 @@
+# PNID Text Recognition Train
+
+# (PNID Drawing data case)
+pnid_text_recog_train:
+  dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog/textrecog_dataset_gen_options.yaml'
+  mmocr_config_path: '/home/diskhkme/Dev/PNID/pnid_recognition_project/tests/test_options/svtr-tiny_original.py'
+  data_root: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog'
+  dict_path: '/home/diskhkme/Dev/PNID/pnid_recognition_project/tests/test_options/dict.txt'
+  work_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog_train'
+  use_wandb: false
+
+
+# (synthetic data case)
+#pnid_text_recog_train:
+#  dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/mmocr_dataset/textrecog_dataset_gen_options.yaml'
+#  mmocr_config_path: '/home/diskhkme/Dev/PNID/pnid_recognition_project/tests/test_options/svtr-tiny_original.py'
+#  data_root: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/mmocr_dataset'
+#  dict_path: '/home/diskhkme/Dev/PNID/pnid_recognition_project/tests/test_options/dict.txt'
+#  work_dir: '/home/diskhkme/Dev/PNID/dataset/text_augmentation_test/mmocr_dataset/train'
+#  use_wandb: false

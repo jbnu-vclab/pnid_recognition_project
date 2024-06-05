@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../../..')
+sys.path.append('../../../..')
 
 import os
 import os.path as osp
@@ -7,8 +7,11 @@ import os.path as osp
 from pnid_recognition_project.common.xml_data import XMLData
 
 def write_dota_txt(source_xml_path, target_dota_path, scale):
-    xml_data = XMLData()
-    xml_data.from_fourpoint_xml(source_xml_path)
+    # TODO: change xml reading to use from_xml fct
+    if XMLData.is_twopoint_format(source_xml_path):
+        xml_data = XMLData().from_twopoint_xml(source_xml_path)
+    else:
+        xml_data = XMLData().from_fourpoint_xml(source_xml_path)
 
     if scale != 1.0:
         xml_data.apply_scale(scale)

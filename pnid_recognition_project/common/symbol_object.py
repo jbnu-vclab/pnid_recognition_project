@@ -72,6 +72,20 @@ class SymbolObject:
 
         return str
 
+    def get_aabb(self):
+        # return aabb (minx, miny, width, height) of symbol
+        # if symbol is rotated, larger bounding box is returned
+        minx = min(self.four_points[0].x, self.four_points[1].x, self.four_points[2].x, self.four_points[3].x)
+        miny = min(self.four_points[0].y, self.four_points[1].y, self.four_points[2].y, self.four_points[3].y)
+        maxx = max(self.four_points[0].x, self.four_points[1].x, self.four_points[2].x, self.four_points[3].x)
+        maxy = max(self.four_points[0].y, self.four_points[1].y, self.four_points[2].y, self.four_points[3].y)
+
+        width = maxx-minx
+        height = maxy-miny
+
+        return (minx, miny, width, height)
+
+
     def get_fourpoint_polygon(self):
         coords = [round(float(self.four_points[0].x)), round(float(self.four_points[0].y)),
                 round(float(self.four_points[1].x)), round(float(self.four_points[1].y)),

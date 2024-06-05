@@ -3,18 +3,25 @@
 
 pnid_inference:
   img_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/JPG'
-  img_files: ['26071-200-M6-052-00001', '26071-200-M6-052-00002', '26071-200-M6-052-00003']
-#  img_files: null # if null, all files in img_dir is inferenced
-  dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter/dataset_gen_options.yaml'
+  img_files: [ '26071-200-M6-052-00001', '26071-200-M6-052-00002', '26071-200-M6-052-00003' ]
+  #  img_files: null # if null, all files in img_dir is inferenced
+  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog_train/inference_123'
 
-  mmrotate_config_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter_train/roi_trans_r50_fpn_1x_dota_le90.py'
-  mmrotate_checkpoint_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter_train/epoch_1.pth'
+#  small_symbol_inference:
+#    dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter/dataset_gen_options.yaml'
+#    mmrotate_config_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter_train/roi_trans_r50_fpn_1x_dota_le90.py'
+#    mmrotate_checkpoint_path: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter_train/epoch_1.pth'
+#
+#    params:
+#      merge_iou_th: 0.1
+#      score_th: 0.1
+#      quantize_degree: 15 # or null if not doing quantize
 
-  params:
-    merge_iou_th: 0.1
-    score_th: 0.1
-    quantize_degree: 15 # or null if not doing quantize
+  text_recog_inference:
+    dataset_option_path: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog/textrecog_dataset_gen_options.yaml'
+    mmocr_config_path: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog_train/svtr-tiny_original.py'
+    mmocr_checkpoint_path: '/home/diskhkme/Dev/PNID/dataset/2nd_textrecog_train/epoch_20.pth'
+    reference_xml_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_source/XML_Sanitized' # if null, get text bbox from small symbol inference, if xml dir is set, read bbox from xml found in dir
 
-  save_dir: '/home/diskhkme/Dev/PNID/dataset/2nd_dota_quarter_train/inference_123'
 
 
