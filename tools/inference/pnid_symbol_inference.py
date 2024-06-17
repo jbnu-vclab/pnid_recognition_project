@@ -24,6 +24,8 @@ def do_inference():
     # prepare target images to inference
     target_img_paths = []
     for file in os.listdir(options['img_dir']):
+        if not file.endswith(('.png', '.jpg', '.jpeg')):
+            continue
         if options['img_files'] is None or len(options['img_files']) == 0:
             target_img_paths.append(os.path.join(options['img_dir'], file))
         else:
