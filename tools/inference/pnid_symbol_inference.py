@@ -1,9 +1,11 @@
 import argparse
 import os.path
 import yaml
+import warnings
 from pnid_recognition_project.common.xml_data import XMLData
 from pnid_recognition_project.inference.inference_engine.symbol_inference_engine import SymbolInferenceEngine
 from pnid_recognition_project.inference.parse_options import parse_options
+from pnid_recognition_project.util.silence_logger import SilenceLogger
 
 def inference_small_symbol(options, engine, scale, img_path):
     inference_result = engine.inference_image(img_path, options['params']['merge_iou_th'])
@@ -53,4 +55,5 @@ def do_inference():
 
 
 if __name__ == '__main__':
-    do_inference()
+    with SilenceLogger():
+        do_inference()
